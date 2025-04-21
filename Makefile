@@ -54,6 +54,11 @@ all: validate
 
 install: validate
 	@echo "Installing i3-gnome integration (version $(VERSION))..."
+	@echo "--- Makefile install --- DEBUG --- "
+	@echo "DESTDIR='$(DESTDIR)'"
+	@echo "PREFIX='$(PREFIX)'"
+	@echo "BINDIR='$(BINDIR)'"
+	@echo "------------------------------------"
 	# Ensure target directories exist within DESTDIR
 	$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR)
 	$(INSTALL) -m0755 $(I3_GNOME) $(TARGET_I3_GNOME)
