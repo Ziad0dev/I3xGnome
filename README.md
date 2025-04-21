@@ -1,50 +1,50 @@
-# i3wm + GNOME [![Maintenance](https://img.shields.io/maintenance/yes/2022.svg)]()
-
----
-## ⚠️⚠️⚠️ This project is no longer maintained
-
-Thank you for your attention and support but this project is no longer supported and is currently archived.
-
----
+# i3-gnome-fork
 
 <p align="center">
   <img src="https://i.imgur.com/Ia1pJUK.png" width="45%" height="45%">
 </p>
 
-Allows you to use i3wm with GNOME 3 Session infrastructure.
+A fork of the [original i3-gnome project](https://github.com/i3-gnome/i3-gnome) updated to work with modern GNOME versions.
 
-## What do I get by installing it?
-- A way to manage GNOME things such as your cursor/icon, (GTK) themes and online accounts.
-- A friendly bridge that keeps your stuff from GNOME in an i3 environment.
-- Useful for people that are getting started with i3wm, but don't want to uninstall their current desktop environment.
+This integration allows you to use i3wm with GNOME Session infrastructure.
+
+## Features
+
+- Integrates i3 window manager with GNOME session management
+- Provides access to GNOME settings for themes, icons, and cursor customization
+- Allows use of GNOME online accounts and other GNOME services
+- Perfect for users transitioning to i3 who still want GNOME functionality
+- Compatible with GNOME Remote Login - access your i3 session remotely
 
 ## Requirements
+
 * i3-wm/i3-gaps
-* GNOME (40.x)
-* GDM (optional, but useful)
+* GNOME (46.x)
+* GDM (recommended)
 
-## Packages
-[![i3-gnome](https://img.shields.io/aur/version/i3-gnome.svg?label=i3-gnome)](https://aur.archlinux.org/packages/i3-gnome/)
+## Installation
 
-## Installation using make
-Using `make`:
-* `git clone https://github.com/i3-gnome/i3-gnome.git`
-* `cd i3-gnome`
-* `sudo make install`
+```bash
+git clone https://github.com/n3ros/i3-gnome-fork.git
+cd i3-gnome-fork
+sudo make install
+```
 
-## Contributing
-* [Guidelines](https://github.com/i3-gnome/i3-gnome/wiki/Contributing)
+## Usage
 
-## Troubleshooting
-* Report issues.
-* Visit our [FAQ](https://github.com/i3-gnome/i3-gnome/issues?q=is%3Aissue+sort%3Aupdated-desc+is%3Aclosed+label%3AFAQ).
-* [Questions](https://github.com/i3-gnome/i3-gnome/labels/question).
+1. Log out of your current session
+2. At the login screen, click the session selector (gear icon)
+3. Choose "I3 + GNOME" from the list
+4. Log in
 
-## Wiki
-Visit our [wiki](https://github.com/i3-gnome/i3-gnome/wiki) to get references and more information about the project.
-* [Tips & Tricks](https://github.com/i3-gnome/i3-gnome/wiki/Tips-&-Tricks)
-* [GNOME Flashback](https://github.com/i3-gnome/i3-gnome/wiki/Tips-&-Tricks#gnome-flashback)
+You'll now have i3 as your window manager with GNOME services running in the background.
 
----
-MIT - © 2014-2020 [Lorenzo Villani](https://github.com/lvillani). 2020 i3-gnome team.
+## Remote Login
 
+This fork supports GNOME's Remote Login feature, allowing you to access your i3 session remotely using tools like GNOME Remote Desktop.
+
+## License
+
+[MIT License](https://opensource.org/licenses/MIT) - © 2024 [n3ros](https://github.com/n3ros)
+
+*This project is a fork of the original i3-gnome by Lorenzo Villani and the i3-gnome team* 

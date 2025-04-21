@@ -6,3 +6,4 @@ TryExec=i3-gnome
 Type=Application
 DesktopNames=GNOME
 X-Ubuntu-Gettext-Domain=gnome-session-3.0
+X-GDM-CanRunHeadless=true

@@ -1,9 +1,4 @@
-#! /bin/sh
-gnome-session --help 2>/dev/null | grep -- --builtin > /dev/null
-HASBUILTIN=$?
-if [ $HASBUILTIN -eq 0 ]; then
-    BUILTINARG="--builtin"
-else
-    BUILTINARG=""
-fi
-gnome-session $BUILTINARG --session i3-gnome "$@"
+#!/bin/sh
+
+# Start GNOME session with i3 as the window manager
+gnome-session --session=i3-gnome "$@"
