@@ -5,12 +5,14 @@ LABEL org.opencontainers.image.description="i3 window manager with GNOME integra
 LABEL org.opencontainers.image.licenses="MIT"
 
 # Install dependencies
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get install -y \
     i3 \
     gnome-session \
     gnome-settings-daemon \
     dbus-x11 \
     make \
+    tzdata \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
