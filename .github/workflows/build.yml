@@ -48,7 +48,7 @@ jobs:
           # Create control file
           cat > "$STAGING/DEBIAN/control" << EOF
           Package: i3-gnome
-          Version: $VERSION
+          Version: __VERSION__
           Section: x11
           Priority: optional
           Architecture: all
@@ -58,6 +58,8 @@ jobs:
           Description: GNOME integration for i3 window manager
            i3-gnome integrates i3 with GNOME Session for a better desktop experience.
           EOF
+          # Replace placeholder with actual version
+          sed -i "s/__VERSION__/$VERSION/g" "$STAGING/DEBIAN/control"
           # Build the package
           dpkg-deb --build "$STAGING" "dist/i3-gnome_${VERSION}-1_all.deb"
       
