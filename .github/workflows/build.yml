@@ -28,8 +28,38 @@ jobs:
       - name: Build Debian package
         run: |
           mkdir -p dist
-          chmod +x packaging/build-deb.sh
-          packaging/build-deb.sh
+          echo "Creating simple DEB package using checkinstall"
+          sudo apt-get install -y checkinstall
+          VERSION=$(grep 'VERSION =' Makefile | cut -d'=' -f2 | tr -d ' ')
+          # Prepare files in a staging directory
+          STAGING="/tmp/i3-gnome-staging"
+          mkdir -p "$STAGING/DEBIAN" "$STAGING/usr/bin" "$STAGING/usr/share/applications" \
+                   "$STAGING/usr/share/gnome-session/sessions" "$STAGING/usr/share/xsessions"
+          # Copy files to staging
+          cp session/i3-gnome "$STAGING/usr/bin/"
+          cp session/gnome-session-i3 "$STAGING/usr/bin/"
+          cp session/i3-gnome.session "$STAGING/usr/share/gnome-session/sessions/"
+          cp session/i3-gnome.desktop "$STAGING/usr/share/applications/"
+          cp session/i3-gnome-xsession.desktop "$STAGING/usr/share/xsessions/i3-gnome.desktop"
+          chmod 755 "$STAGING/usr/bin/i3-gnome" "$STAGING/usr/bin/gnome-session-i3"
+          chmod 644 "$STAGING/usr/share/gnome-session/sessions/i3-gnome.session" \
+                    "$STAGING/usr/share/applications/i3-gnome.desktop" \
+                    "$STAGING/usr/share/xsessions/i3-gnome.desktop"
+          # Create control file
+          cat > "$STAGING/DEBIAN/control" << 'EOF'
+          Package: i3-gnome
+          Version: $VERSION
+          Section: x11
+          Priority: optional
+          Architecture: all
+          Depends: i3-wm | i3, gnome-session, gnome-settings-daemon, dbus-x11
+          Recommends: gdm3
+          Maintainer: n3ros <your-email@example.com>
+          Description: GNOME integration for i3 window manager
+           i3-gnome integrates i3 with GNOME Session for a better desktop experience.
+          EOF
+          # Build the package
+          dpkg-deb --build "$STAGING" "dist/i3-gnome_${VERSION}-1_all.deb"
       
       - name: Build RPM package
         run: |
