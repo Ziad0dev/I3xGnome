@@ -10,14 +10,17 @@ VERSION = 1.2.0
 
 # Installation settings
 INSTALL = install
-DESTDIR ?= /
-PREFIX  ?= $(DESTDIR)/usr
+# DESTDIR is intended for staging builds (e.g., packaging)
+# It should be empty by default for direct installs
+DESTDIR ?=
+# PREFIX defines the installation root relative to the filesystem root
+PREFIX  ?= /usr
 
-# Installation paths
-BINDIR       = $(PREFIX)/bin
-APPDIR       = $(PREFIX)/share/applications
-SESSIONDIR   = $(PREFIX)/share/gnome-session/sessions
-XSESSIONDIR  = $(PREFIX)/share/xsessions
+# Installation paths - construct the full path using DESTDIR and PREFIX
+BINDIR       = $(DESTDIR)$(PREFIX)/bin
+APPDIR       = $(DESTDIR)$(PREFIX)/share/applications
+SESSIONDIR   = $(DESTDIR)$(PREFIX)/share/gnome-session/sessions
+XSESSIONDIR  = $(DESTDIR)$(PREFIX)/share/xsessions
 
 # Source files
 SRC_DIR      = session
@@ -27,7 +30,7 @@ I3_SESSION   = $(SRC_DIR)/i3-gnome.session
 I3_DESKTOP   = $(SRC_DIR)/i3-gnome.desktop
 I3_XSESSION  = $(SRC_DIR)/i3-gnome-xsession.desktop
 
-# Target paths
+# Target paths are now correctly constructed using DESTDIR and PREFIX
 TARGET_I3_GNOME    = $(BINDIR)/i3-gnome
 TARGET_GNOME_I3    = $(BINDIR)/gnome-session-i3
 TARGET_I3_SESSION  = $(SESSIONDIR)/i3-gnome.session
@@ -51,12 +54,13 @@ all: validate
 
 install: validate
 	@echo "Installing i3-gnome integration (version $(VERSION))..."
-	@mkdir -p $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR)
-	$(INSTALL) -m0755 -D $(I3_GNOME) $(TARGET_I3_GNOME)
-	$(INSTALL) -m0755 -D $(GNOME_I3) $(TARGET_GNOME_I3)
-	$(INSTALL) -m0644 -D $(I3_SESSION) $(TARGET_I3_SESSION)
-	$(INSTALL) -m0644 -D $(I3_DESKTOP) $(TARGET_I3_DESKTOP)
-	$(INSTALL) -m0644 -D $(I3_XSESSION) $(TARGET_I3_XSESSION)
+	# Ensure target directories exist within DESTDIR
+	$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR)
+	$(INSTALL) -m0755 $(I3_GNOME) $(TARGET_I3_GNOME)
+	$(INSTALL) -m0755 $(GNOME_I3) $(TARGET_GNOME_I3)
+	$(INSTALL) -m0644 $(I3_SESSION) $(TARGET_I3_SESSION)
+	$(INSTALL) -m0644 $(I3_DESKTOP) $(TARGET_I3_DESKTOP)
+	$(INSTALL) -m0644 $(I3_XSESSION) $(TARGET_I3_XSESSION)
 	@echo "Installation completed successfully."
 
 uninstall:
