@@ -28,9 +28,10 @@ jobs:
       - name: Build Debian package
         run: |
           mkdir -p dist
-          echo "Creating simple DEB package using checkinstall"
-          sudo apt-get install -y checkinstall
+          echo "Creating simple DEB package using dpkg-deb"
+          # Extract version and print it for debugging
           VERSION=$(grep 'VERSION =' Makefile | cut -d'=' -f2 | tr -d ' ')
+          echo "Extracted Version: $VERSION"
           # Prepare files in a staging directory
           STAGING="/tmp/i3-gnome-staging"
           mkdir -p "$STAGING/DEBIAN" "$STAGING/usr/bin" "$STAGING/usr/share/applications" \
@@ -45,7 +46,7 @@ jobs:
           chmod 644 "$STAGING/usr/share/gnome-session/sessions/i3-gnome.session" \
                     "$STAGING/usr/share/applications/i3-gnome.desktop" \
                     "$STAGING/usr/share/xsessions/i3-gnome.desktop"
-          # Create control file
+          # Create control file template
           cat > "$STAGING/DEBIAN/control" << EOF
           Package: i3-gnome
           Version: __VERSION__
@@ -59,8 +60,14 @@ jobs:
            i3-gnome integrates i3 with GNOME Session for a better desktop experience.
           EOF
           # Replace placeholder with actual version
+          echo "Replacing version placeholder in control file..."
           sed -i "s/__VERSION__/$VERSION/g" "$STAGING/DEBIAN/control"
+          # Print the final control file for debugging
+          echo "--- Final Control File --- "
+          cat "$STAGING/DEBIAN/control"
+          echo "--------------------------"
           # Build the package
+          echo "Building Debian package..."
           dpkg-deb --build "$STAGING" "dist/i3-gnome_${VERSION}-1_all.deb"
       
       - name: Build RPM package
