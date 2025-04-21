@@ -1,0 +1,18 @@
+Package: i3-gnome
+Version: 1.2.0
+Section: x11
+Priority: optional
+Architecture: all
+Depends: i3-wm | i3, gnome-session, gnome-settings-daemon, dbus-x11
+Recommends: gdm3
+Maintainer: n3ros <your-email@example.com>
+Description: GNOME integration for i3 window manager
+ This package integrates i3 window manager with GNOME Session
+ infrastructure, providing access to GNOME settings and services
+ while using i3 as the window manager.
+ .
+ Features:
+  * GNOME session management with i3
+  * Access to GNOME settings for themes, icons, and cursors
+  * Support for GNOME online accounts and services
+  * GNOME Remote Login support 

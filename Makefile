@@ -81,6 +81,33 @@ status:
 		fi; \
 	done
 
+# Package building targets
+deb-package:
+	@echo "Building Debian package..."
+	@mkdir -p dist
+	@chmod +x packaging/build-deb.sh
+	@packaging/build-deb.sh
+
+rpm-package:
+	@echo "Building RPM package..."
+	@mkdir -p dist
+	@chmod +x packaging/build-rpm.sh
+	@packaging/build-rpm.sh
+
+tarball:
+	@echo "Creating source tarball..."
+	@mkdir -p dist
+	@TMP_DIR="/tmp/i3-gnome-tarball-$(VERSION)" && \
+	mkdir -p "$$TMP_DIR" && \
+	cp -r ./* "$$TMP_DIR" && \
+	rm -rf "$$TMP_DIR/.git" "$$TMP_DIR/dist" && \
+	tar -czf "dist/i3-gnome-$(VERSION).tar.gz" -C "/tmp" "i3-gnome-tarball-$(VERSION)" && \
+	rm -rf "$$TMP_DIR"
+	@echo "Tarball created at dist/i3-gnome-$(VERSION).tar.gz"
+
+packages: deb-package rpm-package tarball
+	@echo "All packages built successfully in dist/ directory"
+
 help:
 	@echo "i3-gnome-fork $(VERSION) - i3 window manager with GNOME integration"
 	@echo ""
@@ -90,10 +117,14 @@ help:
 	@echo "  make uninstall    - Remove i3-gnome integration"
 	@echo "  make reinstall    - Reinstall i3-gnome integration"
 	@echo "  make status       - Check installation status"
+	@echo "  make deb-package  - Build Debian package"
+	@echo "  make rpm-package  - Build RPM package"
+	@echo "  make tarball      - Create source tarball"
+	@echo "  make packages     - Build all package types"
 	@echo "  make help         - Display this help information"
 	@echo ""
 	@echo "Variables:"
 	@echo "  DESTDIR           - Installation destination root (default: /)"
 	@echo "  PREFIX            - Installation prefix (default: /usr)"
 
-.PHONY: all install uninstall reinstall validate status help
+.PHONY: all install uninstall reinstall validate status deb-package rpm-package tarball packages help
