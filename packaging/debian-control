@@ -1,3 +1,11 @@
+Source: i3-gnome
+Section: x11
+Priority: optional
+Maintainer: n3ros <your-email@example.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.1
+Homepage: https://github.com/n3ros/i3-gnome-fork
+
 Package: i3-gnome
 Version: 1.2.0
 Section: x11
