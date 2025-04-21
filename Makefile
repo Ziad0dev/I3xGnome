@@ -70,11 +70,11 @@ install: validate
 
 uninstall:
 	@echo "Uninstalling i3-gnome integration..."
-	rm -f $(TARGET_I3_GNOME)
-	rm -f $(TARGET_GNOME_I3)
-	rm -f $(TARGET_I3_SESSION)
-	rm -f $(TARGET_I3_DESKTOP)
-	rm -f $(TARGET_I3_XSESSION)
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome
+	rm -f $(DESTDIR)$(PREFIX)/bin/gnome-session-i3
+	rm -f $(DESTDIR)$(PREFIX)/share/gnome-session/sessions/i3-gnome.session
+	rm -f $(DESTDIR)$(PREFIX)/share/applications/i3-gnome.desktop
+	rm -f $(DESTDIR)$(PREFIX)/share/xsessions/i3-gnome.desktop
 	@echo "Uninstallation completed successfully."
 
 reinstall: uninstall install
@@ -82,7 +82,7 @@ reinstall: uninstall install
 # Display information about installed files
 status:
 	@echo "i3-gnome-fork $(VERSION) status:"
-	@for file in $(TARGET_I3_GNOME) $(TARGET_GNOME_I3) $(TARGET_I3_SESSION) $(TARGET_I3_DESKTOP) $(TARGET_I3_XSESSION); do \
+	@for file in $(PREFIX)/bin/i3-gnome $(PREFIX)/bin/gnome-session-i3 $(PREFIX)/share/gnome-session/sessions/i3-gnome.session $(PREFIX)/share/applications/i3-gnome.desktop $(PREFIX)/share/xsessions/i3-gnome.desktop; do \
 		if [ -f "$$file" ]; then \
 			echo "✓ $$file (installed)"; \
 		else \
@@ -109,7 +109,7 @@ tarball:
 	@TMP_DIR="/tmp/i3-gnome-tarball-$(VERSION)" && \
 	mkdir -p "$$TMP_DIR" && \
 	cp -r ./* "$$TMP_DIR" && \
-	rm -rf "$$TMP_DIR/.git" "$$TMP_DIR/dist" && \
+	rm -rf "$$TMP_DIR/.git" "$$TMP_DIR/dist" "$$TMP_DIR/packaging" && \
 	tar -czf "dist/i3-gnome-$(VERSION).tar.gz" -C "/tmp" "i3-gnome-tarball-$(VERSION)" && \
 	rm -rf "$$TMP_DIR"
 	@echo "Tarball created at dist/i3-gnome-$(VERSION).tar.gz"
@@ -140,7 +140,7 @@ help:
 	@echo "  make help         - Display this help information"
 	@echo ""
 	@echo "Variables:"
-	@echo "  DESTDIR           - Installation destination root (default: /)"
+	@echo "  DESTDIR           - Installation destination root (default: empty)"
 	@echo "  PREFIX            - Installation prefix (default: /usr)"
 
 .PHONY: all install uninstall reinstall validate status deb-package rpm-package tarball binary-package packages help
