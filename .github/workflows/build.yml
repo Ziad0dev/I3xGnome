@@ -12,7 +12,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         
       - name: Set up build environment
         run: |
@@ -54,7 +54,7 @@ jobs:
           Architecture: all
           Depends: i3-wm | i3, gnome-session, gnome-settings-daemon, dbus-x11
           Recommends: gdm3
-          Maintainer: n3ros <your-email@example.com>
+          Maintainer: ziad 66523061+Ziad0dev@users.noreply.github.com
           Description: GNOME integration for i3 window manager
            i3-gnome integrates i3 with GNOME Session for a better desktop experience.
           EOF
