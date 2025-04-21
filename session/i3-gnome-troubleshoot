@@ -1,0 +1,182 @@
+#!/usr/bin/env bash
+#
+# i3-gnome-troubleshoot - Diagnostic tool for i3-gnome integration
+#
+# This script helps diagnose common issues with i3-gnome integration
+# and provides suggestions for fixing them.
+#
+
+set -e
+
+# Colors for output
+RED="\033[1;31m"
+GREEN="\033[1;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[1;34m"
+RESET="\033[0m"
+
+# Print header
+echo -e "${BLUE}i3-gnome Troubleshooting Tool${RESET}"
+echo "This tool checks for common issues with i3-gnome integration."
+echo "-------------------------------------------------------------"
+
+# Check if running as root
+if [ "$(id -u)" -eq 0 ]; then
+    echo -e "${YELLOW}Warning: Running as root. Some checks may not be accurate.${RESET}"
+fi
+
+# Function to check if a command exists
+has_command() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Function to check if a file exists
+check_file() {
+    local file="$1"
+    local description="$2"
+    
+    echo -n "Checking $description ($file)... "
+    if [ -f "$file" ]; then
+        echo -e "${GREEN}OK${RESET}"
+        return 0
+    else
+        echo -e "${RED}MISSING${RESET}"
+        return 1
+    fi
+}
+
+# Function to check required packages
+check_dependencies() {
+    echo "Checking required dependencies:"
+    
+    local missing_deps=0
+    
+    for dep in i3 gnome-session gnome-settings-daemon dbus-x11; do
+        echo -n "  - $dep: "
+        if has_command "$dep"; then
+            echo -e "${GREEN}OK${RESET}"
+        else
+            echo -e "${RED}MISSING${RESET}"
+            missing_deps=$((missing_deps + 1))
+        fi
+    done
+    
+    if [ $missing_deps -gt 0 ]; then
+        echo -e "${YELLOW}Some dependencies are missing. Install them with:${RESET}"
+        echo "  sudo apt install i3 gnome-session gnome-settings-daemon dbus-x11"
+    else
+        echo -e "${GREEN}All dependencies are installed.${RESET}"
+    fi
+}
+
+# Function to check if i3-gnome is installed
+check_installation() {
+    echo "Checking i3-gnome installation:"
+    
+    local missing_files=0
+    
+    check_file "/usr/bin/i3-gnome" "launcher script" || missing_files=$((missing_files + 1))
+    check_file "/usr/bin/gnome-session-i3" "session script" || missing_files=$((missing_files + 1))
+    check_file "/usr/share/gnome-session/sessions/i3-gnome.session" "session file" || missing_files=$((missing_files + 1))
+    check_file "/usr/share/applications/i3-gnome.desktop" "desktop file" || missing_files=$((missing_files + 1))
+    check_file "/usr/share/xsessions/i3-gnome.desktop" "xsession file" || missing_files=$((missing_files + 1))
+    
+    if [ $missing_files -gt 0 ]; then
+        echo -e "${YELLOW}Some i3-gnome files are missing. Try reinstalling:${RESET}"
+        echo "  cd /path/to/i3-gnome-fork && sudo make reinstall"
+    else
+        echo -e "${GREEN}All i3-gnome files are correctly installed.${RESET}"
+    fi
+}
+
+# Function to check GNOME version
+check_gnome_version() {
+    echo "Checking GNOME version:"
+    
+    if has_command "gnome-shell"; then
+        local gnome_version
+        gnome_version=$(gnome-shell --version | grep -oP '\d+\.\d+' || echo "unknown")
+        echo -e "  GNOME Shell version: ${BLUE}$gnome_version${RESET}"
+        
+        # Check compatibility
+        if [[ -n "$gnome_version" && "$gnome_version" > "40.0" ]]; then
+            echo -e "  Compatibility: ${GREEN}OK${RESET} (compatible with modern GNOME)"
+        else
+            echo -e "  Compatibility: ${YELLOW}WARNING${RESET} (might have issues with GNOME $gnome_version)"
+        fi
+    else
+        echo -e "  ${YELLOW}Could not determine GNOME version (gnome-shell not found)${RESET}"
+    fi
+}
+
+# Function to check if i3 is running
+check_i3_running() {
+    echo "Checking if i3 is running:"
+    
+    if pgrep -x "i3" > /dev/null; then
+        echo -e "  i3 status: ${GREEN}RUNNING${RESET}"
+    else
+        echo -e "  i3 status: ${RED}NOT RUNNING${RESET}"
+    fi
+}
+
+# Function to check GNOME session status
+check_gnome_session() {
+    echo "Checking GNOME session status:"
+    
+    if pgrep -f "gnome-session" > /dev/null; then
+        echo -e "  GNOME session status: ${GREEN}RUNNING${RESET}"
+        
+        local session_type
+        session_type=$(echo "$XDG_CURRENT_DESKTOP" || echo "unknown")
+        echo -e "  Current desktop: ${BLUE}$session_type${RESET}"
+        
+        if [[ "$session_type" == *"GNOME"* ]]; then
+            echo -e "  Session integration: ${GREEN}OK${RESET}"
+        else
+            echo -e "  Session integration: ${YELLOW}WARNING${RESET} (not running in GNOME session)"
+        fi
+    else
+        echo -e "  GNOME session status: ${RED}NOT RUNNING${RESET}"
+    fi
+}
+
+# Function to check remote login capability
+check_remote_login() {
+    echo "Checking remote login support:"
+    
+    check_file "/usr/share/xsessions/i3-gnome.desktop" "xsession file" || return
+    
+    if grep -q "X-GDM-CanRunHeadless=true" "/usr/share/xsessions/i3-gnome.desktop"; then
+        echo -e "  Remote login capability: ${GREEN}ENABLED${RESET}"
+    else
+        echo -e "  Remote login capability: ${RED}DISABLED${RESET}"
+        echo -e "  ${YELLOW}To enable, add X-GDM-CanRunHeadless=true to /usr/share/xsessions/i3-gnome.desktop${RESET}"
+    fi
+}
+
+# Print system information
+echo "System information:"
+echo -e "  Distribution: ${BLUE}$(lsb_release -sd 2>/dev/null || echo "Unknown")${RESET}"
+echo -e "  Kernel: ${BLUE}$(uname -r)${RESET}"
+echo -e "  Display server: ${BLUE}$XDG_SESSION_TYPE${RESET}"
+echo ""
+
+# Run checks
+check_dependencies
+echo ""
+check_installation
+echo ""
+check_gnome_version
+echo ""
+check_i3_running
+echo ""
+check_gnome_session
+echo ""
+check_remote_login
+echo ""
+
+# Print summary
+echo -e "${BLUE}Troubleshooting complete.${RESET}"
+echo "If you're experiencing issues, check the error messages above."
+echo "For more help, visit: https://github.com/n3ros/i3-gnome-fork" 

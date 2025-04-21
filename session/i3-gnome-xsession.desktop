@@ -1,9 +1,14 @@
 [Desktop Entry]
 Name=I3 + GNOME
-Comment=This session logs you into i3 with GNOME session integration
+Comment=Use i3 window manager with GNOME session integration
 Exec=gnome-session-i3
 TryExec=i3-gnome
 Type=Application
-DesktopNames=GNOME
-X-Ubuntu-Gettext-Domain=gnome-session-3.0
+# Multiple desktop names to ensure proper integration with both GNOME and i3
+DesktopNames=GNOME;i3
+# Support remote login via GNOME Remote Desktop
 X-GDM-CanRunHeadless=true
+# Support for Ubuntu systems
+X-Ubuntu-Gettext-Domain=gnome-session-3.0
+# Keywords for better discoverability in app menus
+Keywords=window;manager;tiling;i3;gnome;

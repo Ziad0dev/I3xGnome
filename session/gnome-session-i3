@@ -1,4 +1,70 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
+# gnome-session-i3 - Launch GNOME Session with i3 window manager
+#
+# This script starts a GNOME session with i3 as the window manager,
+# ensuring compatibility with different versions of gnome-session.
+#
 
-# Start GNOME session with i3 as the window manager
-gnome-session --session=i3-gnome "$@"
+set -e
+
+# Script version
+VERSION="1.2.0"
+
+# Logging
+log() {
+    echo "[gnome-session-i3] $1" >&2
+}
+
+error() {
+    echo "[gnome-session-i3] ERROR: $1" >&2
+    exit 1
+}
+
+# Function to check dependencies
+check_dependencies() {
+    if ! command -v gnome-session >/dev/null 2>&1; then
+        error "gnome-session command not found. Please install gnome-session package."
+    fi
+}
+
+# Function to determine gnome-session version and compatibility
+check_gnome_session_version() {
+    local gnome_version
+    gnome_version=$(gnome-session --version | grep -oP '\d+\.\d+' | head -1 || echo "unknown")
+    
+    log "Detected GNOME Session version: $gnome_version"
+    
+    # Check if session file exists
+    if [ ! -f "/usr/share/gnome-session/sessions/i3-gnome.session" ]; then
+        error "i3-gnome session file not found. Please ensure i3-gnome is properly installed."
+    fi
+}
+
+# Main function to start GNOME session with i3
+start_session() {
+    log "Starting GNOME session with i3 window manager"
+    
+    # Additional environment variables that may be needed
+    export XDG_CURRENT_DESKTOP=GNOME
+    
+    # Launch gnome-session with the i3-gnome session
+    exec gnome-session --session=i3-gnome "$@"
+}
+
+# Main process
+main() {
+    log "Initializing gnome-session-i3 version $VERSION"
+    
+    # Check for required commands
+    check_dependencies
+    
+    # Check GNOME session version and compatibility
+    check_gnome_session_version
+    
+    # Start the session
+    start_session "$@"
+}
+
+# Run the main function
+main "$@"

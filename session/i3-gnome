@@ -1,18 +1,90 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
+# i3-gnome - Launcher script for i3 with GNOME Session integration
+# 
+# This script registers i3 with the GNOME Session Manager and then
+# launches i3 window manager. It properly handles GNOME integration
+# including support for GNOME settings daemon and other components.
+#
 
-# Register with gnome-session so that it does not kill the whole session thinking it is dead.
-test -n "$DESKTOP_AUTOSTART_ID" && {
-    dbus-send --print-reply --session --dest=org.gnome.SessionManager "/org/gnome/SessionManager" org.gnome.SessionManager.RegisterClient "string:i3-gnome" "string:$DESKTOP_AUTOSTART_ID"
+set -e
+
+# Script version
+VERSION="1.2.0"
+
+# Logging
+log() {
+    echo "[i3-gnome] $1" >&2
 }
 
-# Support for merging .Xresources
-test -e $HOME/.Xresources && {
-    xrdb -merge $HOME/.Xresources
+error() {
+    echo "[i3-gnome] ERROR: $1" >&2
+    exit 1
 }
 
-i3
-
-# Logout process.
-test -n "$DESKTOP_AUTOSTART_ID" && {
-	dbus-send --print-reply --session --dest=org.gnome.SessionManager "/org/gnome/SessionManager" org.gnome.SessionManager.Logout "uint32:1"
+# Function to check for dependencies
+check_dependencies() {
+    for cmd in i3 dbus-send xrdb; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            error "Command '$cmd' not found. Please install it."
+        fi
+    done
 }
+
+# Function to register with GNOME Session Manager
+register_with_gnome_session() {
+    if [ -n "$DESKTOP_AUTOSTART_ID" ]; then
+        log "Registering with GNOME Session Manager (ID: $DESKTOP_AUTOSTART_ID)"
+        dbus-send --print-reply --session --dest=org.gnome.SessionManager \
+            "/org/gnome/SessionManager" \
+            "org.gnome.SessionManager.RegisterClient" \
+            "string:i3-gnome" "string:$DESKTOP_AUTOSTART_ID" || \
+            log "Warning: Failed to register with GNOME Session Manager"
+    else
+        log "No DESKTOP_AUTOSTART_ID found, running in standalone mode"
+    fi
+}
+
+# Function to load X resources
+load_xresources() {
+    if [ -e "$HOME/.Xresources" ]; then
+        log "Loading X resources"
+        xrdb -merge "$HOME/.Xresources" || log "Warning: Failed to load X resources"
+    fi
+}
+
+# Function to handle logout
+cleanup() {
+    log "Performing cleanup"
+    if [ -n "$DESKTOP_AUTOSTART_ID" ]; then
+        log "Sending logout request to GNOME Session Manager"
+        dbus-send --print-reply --session --dest=org.gnome.SessionManager \
+            "/org/gnome/SessionManager" \
+            "org.gnome.SessionManager.Logout" "uint32:1" || \
+            log "Warning: Failed to send logout signal"
+    fi
+}
+
+# Main function
+main() {
+    log "Starting i3-gnome version $VERSION"
+    
+    # Check dependencies
+    check_dependencies
+    
+    # Register with GNOME Session
+    register_with_gnome_session
+    
+    # Load X resources
+    load_xresources
+    
+    # Launch i3 window manager
+    log "Launching i3 window manager"
+    i3
+    
+    # Handle session end
+    cleanup
+}
+
+# Run the main function
+main "$@"

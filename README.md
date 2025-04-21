@@ -45,6 +45,6 @@ This fork supports GNOME's Remote Login feature, allowing you to access your i3 
 
 ## License
 
-[MIT License](https://opensource.org/licenses/MIT) - © 2024 [n3ros](https://github.com/n3ros)
+[MIT License](https://opensource.org/licenses/MIT) - © 2025 [Ziad](https://github.com/Ziad0dev/)
 
 *This project is a fork of the original i3-gnome by Lorenzo Villani and the i3-gnome team* 
