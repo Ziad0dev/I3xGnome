@@ -46,7 +46,7 @@ jobs:
                     "$STAGING/usr/share/applications/i3-gnome.desktop" \
                     "$STAGING/usr/share/xsessions/i3-gnome.desktop"
           # Create control file
-          cat > "$STAGING/DEBIAN/control" << 'EOF'
+          cat > "$STAGING/DEBIAN/control" << EOF
           Package: i3-gnome
           Version: $VERSION
           Section: x11
