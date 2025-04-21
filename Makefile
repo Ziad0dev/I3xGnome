@@ -126,6 +126,7 @@ help:
 	@echo "  make deb-package  - Build Debian package"
 	@echo "  make rpm-package  - Build RPM package"
 	@echo "  make tarball      - Create source tarball"
+	@echo "  make binary-package - Build self-extracting installer"
 	@echo "  make packages     - Build all package types"
 	@echo "  make help         - Display this help information"
 	@echo ""
