@@ -72,7 +72,7 @@ echo "3.0 (native)" > "$BUILD_DIR/i3-gnome-$VERSION/debian/source/format"
 # Build the package
 cd "$BUILD_DIR/i3-gnome-$VERSION"
 echo "Running dpkg-buildpackage..."
-dpkg-buildpackage -us -uc
+dpkg-buildpackage -us -uc -d
 
 # Copy the result
 mkdir -p "$PROJECT_DIR/dist"
