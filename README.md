@@ -24,10 +24,26 @@ This integration allows you to use i3wm with GNOME Session infrastructure.
 
 ## Installation
 
+### From Source
+
 ```bash
 git clone https://github.com/n3ros/i3-gnome-fork.git
 cd i3-gnome-fork
 sudo make install
+```
+
+### From Packages
+
+#### Debian/Ubuntu
+```bash
+# Download the latest .deb from Releases
+sudo apt install ./i3-gnome_1.2.0-1_all.deb
+```
+
+#### Fedora/RHEL
+```bash
+# Download the latest .rpm from Releases
+sudo dnf install ./i3-gnome-1.2.0-1.fc*.noarch.rpm
 ```
 
 ## Usage
@@ -39,9 +55,31 @@ sudo make install
 
 You'll now have i3 as your window manager with GNOME services running in the background.
 
+## Troubleshooting
+
+Run the included troubleshooting tool to diagnose common issues:
+
+```bash
+/usr/bin/i3-gnome-troubleshoot
+```
+
 ## Remote Login
 
 This fork supports GNOME's Remote Login feature, allowing you to access your i3 session remotely using tools like GNOME Remote Desktop.
+
+## Building Packages
+
+```bash
+# Build all package types
+make packages
+
+# Or build specific package types
+make deb-package   # Debian package
+make rpm-package   # RPM package
+make tarball       # Source tarball
+```
+
+See [RELEASE.md](RELEASE.md) for more details on the release process.
 
 ## License
 
