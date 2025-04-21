@@ -71,8 +71,8 @@ cd "$BUILD_DIR"
 tar -czf "archive.tar.gz" "i3-gnome-$VERSION"
 
 # Get line count of installer script
-ARCHIVE_OFFSET=$(grep -n "^__ARCHIVE_OFFSET__$" "$BUILD_DIR/installer.sh" | cut -d: -f1)
-ARCHIVE_OFFSET=$((ARCHIVE_OFFSET + 1))
+LINES=$(wc -l < "$BUILD_DIR/installer.sh")
+ARCHIVE_OFFSET=$((LINES + 1))
 
 # Replace archive offset placeholder
 sed -i "s/__ARCHIVE_OFFSET__/$ARCHIVE_OFFSET/g" "$BUILD_DIR/installer.sh"
