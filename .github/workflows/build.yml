@@ -143,8 +143,13 @@ jobs:
       - name: Extract version and set lowercase owner
         id: vars
         run: |
+          echo "Original Owner: ${{ github.repository_owner }}"
+          LOWER_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "Calculated Lower Owner: $LOWER_OWNER"
+          echo "OWNER_LC=$LOWER_OWNER" >> $GITHUB_ENV
           echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-          echo "OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')" >> $GITHUB_ENV
+          echo "--- GITHUB_ENV content check ---"
+          cat $GITHUB_ENV
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
