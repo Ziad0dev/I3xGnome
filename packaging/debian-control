@@ -7,13 +7,9 @@ Standards-Version: 4.5.1
 Homepage: https://github.com/n3ros/i3-gnome-fork
 
 Package: i3-gnome
-Version: 1.2.0
-Section: x11
-Priority: optional
 Architecture: all
 Depends: i3-wm | i3, gnome-session, gnome-settings-daemon, dbus-x11
 Recommends: gdm3
-Maintainer: n3ros <your-email@example.com>
 Description: GNOME integration for i3 window manager
  This package integrates i3 window manager with GNOME Session
  infrastructure, providing access to GNOME settings and services
