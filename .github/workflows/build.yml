@@ -130,6 +130,12 @@ jobs:
           name: packages
           path: dist
       
+      - name: Set lower case owner name
+        run: |
+          echo "OWNER_LC=${OWNER,,}" >>${GITHUB_ENV}
+        env:
+          OWNER: '${{ github.repository_owner }}'
+      
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       
@@ -140,14 +146,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       
-      - name: Extract version and set lowercase owner
-        id: vars
-        run: |
-          VERSION="${GITHUB_REF#refs/tags/v}" # Get version without 'v' prefix
-          echo "Version: $VERSION"
-          # Construct the multi-line tags string for output using hardcoded owner
-          TAGS="ghcr.io/ziad0dev/i3-gnome:latest\nghcr.io/ziad0dev/i3-gnome:${VERSION}"
-          echo "tags=$TAGS" >> $GITHUB_OUTPUT # Set the output for the next step
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -155,4 +156,6 @@ jobs:
           context: .
           file: packaging/Dockerfile
           push: true
-          tags: ${{ steps.vars.outputs.tags }} # Use the output from the previous step
+          tags: |
+            ghcr.io/${{ env.OWNER_LC }}/i3-gnome:latest
+            ghcr.io/${{ env.OWNER_LC }}/i3-gnome:${{ env.VERSION }}
