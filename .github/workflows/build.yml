@@ -146,10 +146,11 @@ jobs:
           echo "Original Owner: ${{ github.repository_owner }}"
           LOWER_OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
           echo "Calculated Lower Owner: $LOWER_OWNER"
-          echo "OWNER_LC=$LOWER_OWNER" >> $GITHUB_ENV
-          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
-          echo "--- GITHUB_ENV content check ---"
-          cat $GITHUB_ENV
+          VERSION="${GITHUB_REF#refs/tags/v}" # Get version without 'v' prefix
+          echo "Version: $VERSION"
+          # Construct the multi-line tags string for output
+          TAGS="ghcr.io/${LOWER_OWNER}/i3-gnome:latest\nghcr.io/${LOWER_OWNER}/i3-gnome:${VERSION}"
+          echo "tags=$TAGS" >> $GITHUB_OUTPUT # Set the output for the next step
       
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -157,6 +158,4 @@ jobs:
           context: .
           file: packaging/Dockerfile
           push: true
-          tags: |
-            ghcr.io/${{ env.OWNER_LC }}/i3-gnome:latest
-            ghcr.io/${{ env.OWNER_LC }}/i3-gnome:${{ env.VERSION }} 
+          tags: ${{ steps.vars.outputs.tags }} # Use the output from the previous step
