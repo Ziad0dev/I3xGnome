@@ -17,7 +17,7 @@ jobs:
       - name: Set up build environment
         run: |
           sudo apt-get update
-          sudo apt-get install -y build-essential debhelper devscripts rpm
+          sudo apt-get install -y build-essential debhelper devscripts rpm fakeroot dpkg-dev
       
       - name: Extract version
         id: version
@@ -45,6 +45,17 @@ jobs:
           rm -rf "$BUILD_DIR/.git" "$BUILD_DIR/dist"
           tar -czf "dist/i3-gnome-$VERSION.tar.gz" -C "$(dirname $BUILD_DIR)" "$(basename $BUILD_DIR)"
       
+      - name: Build binary package
+        run: |
+          chmod +x packaging/build-binary.sh
+          packaging/build-binary.sh
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: dist/
+      
       - name: Create Release
         if: startsWith(github.ref, 'refs/tags/')
         id: create_release
@@ -57,5 +68,49 @@ jobs:
             dist/*.deb
             dist/*.rpm
             dist/*.tar.gz
+            dist/*.run
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  publish-packages:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    
+    permissions:
+      packages: write
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: packages
+          path: dist
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+      
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: packaging/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/i3-gnome:latest
+            ghcr.io/${{ github.repository_owner }}/i3-gnome:${{ env.VERSION }} 

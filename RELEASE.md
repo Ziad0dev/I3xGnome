@@ -24,7 +24,9 @@ When a tag is pushed, GitHub Actions will automatically:
 1. Build Debian (.deb) packages
 2. Build RPM (.rpm) packages
 3. Create a source tarball
-4. Create a GitHub release with all build artifacts attached
+4. Create a self-extracting binary installer (.run)
+5. Create a GitHub release with all build artifacts attached
+6. Publish the Docker image to GitHub Packages
 
 ## Manual Package Building
 
@@ -37,9 +39,10 @@ make packages
 
 ### Build specific package types
 ```
-make deb-package   # Debian package
-make rpm-package   # RPM package
-make tarball       # Source tarball
+make deb-package     # Debian package
+make rpm-package     # RPM package
+make tarball         # Source tarball
+make binary-package  # Self-extracting installer
 ```
 
 All packages will be created in the `dist/` directory.
@@ -56,9 +59,20 @@ sudo apt install ./dist/i3-gnome_X.Y.Z-1_all.deb
 sudo dnf install ./dist/i3-gnome-X.Y.Z-1.fc*.noarch.rpm
 ```
 
+### Binary Installer
+```
+chmod +x ./dist/i3-gnome-X.Y.Z.run
+sudo ./dist/i3-gnome-X.Y.Z.run
+```
+
 ### From Source Tarball
 ```
 tar -xf i3-gnome-X.Y.Z.tar.gz
 cd i3-gnome-X.Y.Z
 sudo make install
+```
+
+### From GitHub Packages (Docker)
+```
+docker pull ghcr.io/n3ros/i3-gnome:X.Y.Z
 ``` 

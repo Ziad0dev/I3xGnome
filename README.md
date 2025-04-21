@@ -46,6 +46,23 @@ sudo apt install ./i3-gnome_1.2.0-1_all.deb
 sudo dnf install ./i3-gnome-1.2.0-1.fc*.noarch.rpm
 ```
 
+#### Binary Installer
+```bash
+# Download the binary installer from Releases
+chmod +x i3-gnome-1.2.0.run
+sudo ./i3-gnome-1.2.0.run
+```
+
+### From GitHub Packages (Docker)
+
+```bash
+# Pull the container image
+docker pull ghcr.io/n3ros/i3-gnome:latest
+
+# For a specific version
+docker pull ghcr.io/n3ros/i3-gnome:1.2.0
+```
+
 ## Usage
 
 1. Log out of your current session
@@ -77,6 +94,7 @@ make packages
 make deb-package   # Debian package
 make rpm-package   # RPM package
 make tarball       # Source tarball
+make binary-package # Self-extracting installer
 ```
 
 See [RELEASE.md](RELEASE.md) for more details on the release process.

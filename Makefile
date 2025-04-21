@@ -105,7 +105,13 @@ tarball:
 	rm -rf "$$TMP_DIR"
 	@echo "Tarball created at dist/i3-gnome-$(VERSION).tar.gz"
 
-packages: deb-package rpm-package tarball
+binary-package:
+	@echo "Building binary installer..."
+	@mkdir -p dist
+	@chmod +x packaging/build-binary.sh
+	@packaging/build-binary.sh
+
+packages: deb-package rpm-package tarball binary-package
 	@echo "All packages built successfully in dist/ directory"
 
 help:
@@ -127,4 +133,4 @@ help:
 	@echo "  DESTDIR           - Installation destination root (default: /)"
 	@echo "  PREFIX            - Installation prefix (default: /usr)"
 
-.PHONY: all install uninstall reinstall validate status deb-package rpm-package tarball packages help
+.PHONY: all install uninstall reinstall validate status deb-package rpm-package tarball binary-package packages help
