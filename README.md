@@ -1,4 +1,4 @@
-# i3-gnome-fork
+# I3xGnome
 
 <p align="center">
   <img src="https://i.imgur.com/Ia1pJUK.png" width="45%" height="45%">
@@ -27,7 +27,7 @@ This integration allows you to use i3wm with GNOME Session infrastructure.
 ### From Source
 
 ```bash
-git clone https://github.com/n3ros/i3-gnome-fork.git
+git clone git@github.com:Ziad0dev/I3xGnome.git
 cd i3-gnome-fork
 sudo make install
 ```
