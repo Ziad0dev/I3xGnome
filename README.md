@@ -74,10 +74,49 @@ You'll now have i3 as your window manager with GNOME services running in the bac
 
 ## Troubleshooting
 
+If you experience issues (like the session failing to start or crashing immediately), follow these steps:
+
+1.  **Run the Diagnostic Script:**
+    This script checks for common problems like missing dependencies, incorrect installation, or configuration issues.
+    ```bash
+    /usr/bin/i3-gnome-diagnose.sh
+    # Or if run from source directory before install:
+    # ./session/i3-gnome-diagnose.sh
+    ```
+    Review the output, especially the "Recommendations" section. You might need to run it with `sudo` for some checks (like NVIDIA modeset status) to work fully.
+
+2.  **Check Logs:**
+    After a failed login attempt, switch to a working session or TTY (`Ctrl+Alt+F3`) and check the systemd journal:
+    *   **System Log:** `journalctl -b 0 -p err` (Look for errors from `gdm`, `nvidia`, `drm`, `gnome-session`)
+    *   **Session Log:** `journalctl --user -b 0` (Look for errors from `gnome-shell`, `i3-gnome`, `gsd-*` components)
+    Focus on messages timestamped around the time of the failed login.
+
+3.  **Common Issues & Fixes:**
+
+    *   **Crash ("A problem has occurred...") with NVIDIA Drivers:** This is a known and difficult issue, often related to conflicts between the NVIDIA driver, the display manager (especially GDM), and GNOME Shell when i3 replaces Mutter.
+        *   **Ensure Wayland is Disabled in GDM:** GDM might default to or try Wayland, which often works poorly with NVIDIA. Edit `/etc/gdm3/custom.conf` (or `/etc/gdm/custom.conf`) and ensure `WaylandEnable=false` is present and uncommented under the `[daemon]` section. Reboot after changing.
+        *   **Try LightDM:** LightDM is often less prone to these specific conflicts. Install (`sudo apt install lightdm`) and configure it as the default (`sudo dpkg-reconfigure lightdm`, select `lightdm`). Reboot and test.
+        *   **Try Different NVIDIA Driver:** Compatibility varies. Use Ubuntu's "Additional Drivers" tool or `ubuntu-drivers devices` to check for other proprietary versions (e.g., the 535 series if you're on 550). Install an alternative and reboot.
+        *   **Xorg Configuration:** Create a basic NVIDIA Xorg config file at `/etc/X11/xorg.conf.d/20-nvidia.conf`. See the diagnostic script output or online resources for examples. Reboot after creating.
+        *   **Disable GNOME Extensions:** Extensions can interfere. Temporarily disable them all using the Extensions app (`gnome-shell-extension-prefs`) or `gnome-extensions disable --all`. Log out and test.
+
+    *   **Missing Dependencies:** Ensure `i3`, `gnome-session`, `gnome-settings-daemon`, and `dbus-x11` (or `dbus`) are installed via your package manager.
+
+    *   **Incorrect Installation:** If files are missing (check diagnostic script), reinstall using `sudo make reinstall` from the source directory.
+
+4.  **Reporting Issues:**
+    If you continue to have problems, please open an issue on the GitHub repository. Include:
+    *   Your Linux distribution and version.
+    *   Your GNOME version (`gnome-shell --version`).
+    *   Your graphics card and driver version (`nvidia-smi` if applicable).
+    *   The output of the `i3-gnome-diagnose.sh` script.
+    *   Relevant error messages from `journalctl`.
+    *   Steps you have already tried.
+
 Run the included troubleshooting tool to diagnose common issues:
 
 ```bash
-/usr/bin/i3-gnome-troubleshoot
+/usr/bin/i3-gnome-troubleshoot # This script is deprecated, use i3-gnome-diagnose.sh
 ```
 
 ## Remote Login
@@ -103,4 +142,32 @@ See [RELEASE.md](RELEASE.md) for more details on the release process.
 
 [MIT License](https://opensource.org/licenses/MIT) - © 2025 [Ziad](https://github.com/Ziad0dev/)
 
-*This project is a fork of the original i3-gnome by Lorenzo Villani and the i3-gnome team* 
+*This project is a fork of the original i3-gnome by Lorenzo Villani and the i3-gnome team*
+
+# i3-gnome Setup
+
+This configuration provides a setup for running i3 window manager sessions integrated with GNOME components.
+
+## Tested Environment
+
+*   **OS:** Ubuntu 24.04 LTS (or latest desktop version)
+*   **Display Manager:** LightDM 1.30.0
+*   **Graphics:** NVIDIA (tested with RTX 3060, Driver 550+)
+
+## NVIDIA Configuration
+
+For optimal compatibility, especially with NVIDIA drivers, it's recommended to use a minimal Xorg configuration. Place the included `20-nvidia.conf` file into `/etc/X11/xorg.conf.d/` on your system:
+
+```bash
+sudo cp 20-nvidia.conf /etc/X11/xorg.conf.d/20-nvidia.conf
+```
+
+Reboot or restart your display manager after copying the file.
+
+## Installation / Usage
+
+(Add instructions on how to install/use your i3-gnome setup here)
+
+## Streamlining / Updates
+
+(Add details about any specific streamlining or update procedures here)
