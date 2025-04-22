@@ -159,5 +159,5 @@ jobs:
           file: packaging/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ env.OWNER_LC }}/i3-gnome:latest
-            ghcr.io/${{ env.OWNER_LC }}/i3-gnome:${{ env.VERSION }}
+            ghcr.io/${{ env.OWNER_LC }}/i3xgnome:latest
+            ghcr.io/${{ env.OWNER_LC }}/i3xgnome:${{ env.VERSION }}
