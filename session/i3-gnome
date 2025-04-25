@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 #
-# i3-gnome - Launcher script for i3 with GNOME Session integration
+# i3xGnome - Launcher script for i3 with GNOME Session integration
 # 
 # This script registers i3 with the GNOME Session Manager and then
 # launches i3 window manager. It properly handles GNOME integration
@@ -14,11 +14,11 @@ VERSION="1.2.0"
 
 # Logging
 log() {
-    echo "[i3-gnome] $1" >&2
+    echo "[i3xGnome] $1" >&2
 }
 
 error() {
-    echo "[i3-gnome] ERROR: $1" >&2
+    echo "[i3xGnome] ERROR: $1" >&2
     exit 1
 }
 
@@ -67,7 +67,7 @@ cleanup() {
 
 # Main function
 main() {
-    log "Starting i3-gnome version $VERSION"
+    log "Starting i3xGnome version $VERSION"
     
     # Check dependencies
     check_dependencies

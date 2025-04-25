@@ -5,6 +5,32 @@ All notable changes to i3-gnome will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-04-20
+
+### Added
+- NVIDIA configuration improvements
+- Simplified 20-nvidia.conf for better hardware support
+
+### Changed
+- Updated documentation with setup information and NVIDIA troubleshooting
+- Updated README with comprehensive installation instructions
+
+## [1.3.0] - 2025-04-23
+
+### Added
+- GitHub Packages and binary installer support
+- Installation wiki page
+
+### Changed
+- Improved Makefile paths to handle DESTDIR correctly for RPM builds
+- Updated CI workflows for better release automation
+- Renamed Docker image to i3xgnome
+
+### Fixed
+- Debian packaging issues
+- Docker build configuration
+- GitHub Actions workflows and artifact handling
+
 ## [1.2.0] - 2023-06-15
 
 ### Added

@@ -1,6 +1,6 @@
-# Release Process for i3-gnome
+# Release Process for i3xGnome
 
-This document outlines the process for creating and publishing new releases of i3-gnome.
+This document outlines the process for creating and publishing new releases of i3xGnome.
 
 ## Versioning
 
@@ -74,5 +74,5 @@ sudo make install
 
 ### From GitHub Packages (Docker)
 ```
-docker pull ghcr.io/n3ros/i3-gnome:X.Y.Z
+docker pull ghcr.io/ziad0dev/i3xgnome:X.Y.Z
 ``` 

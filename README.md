@@ -57,10 +57,10 @@ sudo ./i3-gnome-1.2.0.run
 
 ```bash
 # Pull the container image
-docker pull ghcr.io/n3ros/i3-gnome:latest
+docker pull ghcr.io/ziad0dev/i3xgnome:latest
 
 # For a specific version
-docker pull ghcr.io/n3ros/i3-gnome:1.2.0
+docker pull ghcr.io/ziad0dev/i3xgnome:1.3.0
 ```
 
 ## Usage
@@ -88,7 +88,7 @@ If you experience issues (like the session failing to start or crashing immediat
 2.  **Check Logs:**
     After a failed login attempt, switch to a working session or TTY (`Ctrl+Alt+F3`) and check the systemd journal:
     *   **System Log:** `journalctl -b 0 -p err` (Look for errors from `gdm`, `nvidia`, `drm`, `gnome-session`)
-    *   **Session Log:** `journalctl --user -b 0` (Look for errors from `gnome-shell`, `i3-gnome`, `gsd-*` components)
+    *   **Session Log:** `journalctl --user -b 0` (Look for errors from `gnome-shell`, `i3xGnome`, `gsd-*` components)
     Focus on messages timestamped around the time of the failed login.
 
 3.  **Common Issues & Fixes:**
@@ -144,7 +144,7 @@ See [RELEASE.md](RELEASE.md) for more details on the release process.
 
 *This project is a fork of the original i3-gnome by Lorenzo Villani and the i3-gnome team*
 
-# i3-gnome Setup
+# i3xGnome Setup
 
 This configuration provides a setup for running i3 window manager sessions integrated with GNOME components.
 

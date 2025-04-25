@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 #
-# i3-gnome-troubleshoot - Diagnostic tool for i3-gnome integration
+# i3xGnome-troubleshoot - Diagnostic tool for i3xGnome integration
+# Author: Your Name
 #
-# This script helps diagnose common issues with i3-gnome integration
+# This script helps diagnose common issues with i3xGnome integration
 # and provides suggestions for fixing them.
 #
 
@@ -16,9 +17,9 @@ BLUE="\033[1;34m"
 RESET="\033[0m"
 
 # Print header
-echo -e "${BLUE}i3-gnome Troubleshooting Tool${RESET}"
-echo "This tool checks for common issues with i3-gnome integration."
-echo "-------------------------------------------------------------"
+echo -e "${BLUE}i3xGnome Troubleshooting Tool${RESET}"
+echo "This tool checks for common issues with i3xGnome integration."
+echo "--------------------------------------------------"
 
 # Check if running as root
 if [ "$(id -u)" -eq 0 ]; then
@@ -69,9 +70,9 @@ check_dependencies() {
     fi
 }
 
-# Function to check if i3-gnome is installed
+# Function to check if i3xGnome is installed
 check_installation() {
-    echo "Checking i3-gnome installation:"
+    echo "Checking i3xGnome installation:"
     
     local missing_files=0
     
@@ -82,10 +83,10 @@ check_installation() {
     check_file "/usr/share/xsessions/i3-gnome.desktop" "xsession file" || missing_files=$((missing_files + 1))
     
     if [ $missing_files -gt 0 ]; then
-        echo -e "${YELLOW}Some i3-gnome files are missing. Try reinstalling:${RESET}"
+        echo -e "${YELLOW}Some i3xGnome files are missing. Try reinstalling:${RESET}"
         echo "  cd /path/to/i3-gnome-fork && sudo make reinstall"
     else
-        echo -e "${GREEN}All i3-gnome files are correctly installed.${RESET}"
+        echo -e "${GREEN}All i3xGnome files are correctly installed.${RESET}"
     fi
 }
 

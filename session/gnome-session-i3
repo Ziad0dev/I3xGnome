@@ -37,7 +37,7 @@ check_gnome_session_version() {
     
     # Check if session file exists
     if [ ! -f "/usr/share/gnome-session/sessions/i3-gnome.session" ]; then
-        error "i3-gnome session file not found. Please ensure i3-gnome is properly installed."
+        error "i3-gnome session file not found. Please ensure i3xGnome is properly installed."
     fi
 }
 
