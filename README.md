@@ -20,7 +20,7 @@ This integration allows you to use i3wm with GNOME Session infrastructure.
 
 * i3-wm/i3-gaps
 * GNOME (46.x)
-* GDM (recommended)
+* lightDM (recommended)
 
 ## Installation
 
@@ -28,7 +28,7 @@ This integration allows you to use i3wm with GNOME Session infrastructure.
 
 ```bash
 git clone git@github.com:Ziad0dev/I3xGnome.git
-cd i3-gnome-fork
+cd I3xGnome
 sudo make install
 ```
 
