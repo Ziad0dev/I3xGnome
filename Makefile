@@ -29,6 +29,7 @@ GNOME_I3     = $(SRC_DIR)/gnome-session-i3
 I3_SESSION   = $(SRC_DIR)/i3-gnome.session
 I3_DESKTOP   = $(SRC_DIR)/i3-gnome.desktop
 I3_XSESSION  = $(SRC_DIR)/i3-gnome-xsession.desktop
+I3_DIAGNOSE  = $(SRC_DIR)/i3-gnome-diagnose.sh
 
 # Target paths are now correctly constructed using DESTDIR and PREFIX
 TARGET_I3_GNOME    = $(BINDIR)/i3-gnome
@@ -36,6 +37,7 @@ TARGET_GNOME_I3    = $(BINDIR)/gnome-session-i3
 TARGET_I3_SESSION  = $(SESSIONDIR)/i3-gnome.session
 TARGET_I3_DESKTOP  = $(APPDIR)/i3-gnome.desktop
 TARGET_I3_XSESSION = $(XSESSIONDIR)/i3-gnome.desktop
+TARGET_I3_DIAGNOSE = $(BINDIR)/i3-gnome-diagnose.sh
 
 # Validation function
 validate:
@@ -45,6 +47,7 @@ validate:
 	@test -f $(I3_SESSION) || { echo "Error: $(I3_SESSION) not found"; exit 1; }
 	@test -f $(I3_DESKTOP) || { echo "Error: $(I3_DESKTOP) not found"; exit 1; }
 	@test -f $(I3_XSESSION) || { echo "Error: $(I3_XSESSION) not found"; exit 1; }
+	@test -f $(I3_DIAGNOSE) || { echo "Error: $(I3_DIAGNOSE) not found"; exit 1; }
 	@echo "All files validated successfully."
 
 # Target rules
@@ -60,18 +63,22 @@ install: validate
 	@echo "BINDIR='$(BINDIR)'"
 	@echo "------------------------------------"
 	# Ensure target directories exist within DESTDIR
-	$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR)
+	$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR) $(DESTDIR)/etc/i3-gnome
 	$(INSTALL) -m0755 $(I3_GNOME) $(TARGET_I3_GNOME)
 	$(INSTALL) -m0755 $(GNOME_I3) $(TARGET_GNOME_I3)
+	$(INSTALL) -m0755 $(I3_DIAGNOSE) $(TARGET_I3_DIAGNOSE)
+	$(INSTALL) -m0755 tools/benchmark-performance.sh $(BINDIR)/i3-gnome-benchmark
 	$(INSTALL) -m0644 $(I3_SESSION) $(TARGET_I3_SESSION)
 	$(INSTALL) -m0644 $(I3_DESKTOP) $(TARGET_I3_DESKTOP)
 	$(INSTALL) -m0644 $(I3_XSESSION) $(TARGET_I3_XSESSION)
+	$(INSTALL) -m0644 config/i3-gnome-performance.conf $(DESTDIR)/etc/i3-gnome/performance.conf
 	@echo "Installation completed successfully."
 
 uninstall:
 	@echo "Uninstalling i3-gnome integration..."
 	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome
 	rm -f $(DESTDIR)$(PREFIX)/bin/gnome-session-i3
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-diagnose.sh
 	rm -f $(DESTDIR)$(PREFIX)/share/gnome-session/sessions/i3-gnome.session
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/i3-gnome.desktop
 	rm -f $(DESTDIR)$(PREFIX)/share/xsessions/i3-gnome.desktop
@@ -82,7 +89,7 @@ reinstall: uninstall install
 # Display information about installed files
 status:
 	@echo "i3-gnome-fork $(VERSION) status:"
-	@for file in $(PREFIX)/bin/i3-gnome $(PREFIX)/bin/gnome-session-i3 $(PREFIX)/share/gnome-session/sessions/i3-gnome.session $(PREFIX)/share/applications/i3-gnome.desktop $(PREFIX)/share/xsessions/i3-gnome.desktop; do \
+	@for file in $(PREFIX)/bin/i3-gnome $(PREFIX)/bin/gnome-session-i3 $(PREFIX)/bin/i3-gnome-diagnose.sh $(PREFIX)/share/gnome-session/sessions/i3-gnome.session $(PREFIX)/share/applications/i3-gnome.desktop $(PREFIX)/share/xsessions/i3-gnome.desktop; do \
 		if [ -f "$$file" ]; then \
 			echo "✓ $$file (installed)"; \
 		else \
@@ -123,6 +130,51 @@ binary-package:
 packages: deb-package rpm-package tarball binary-package
 	@echo "All packages built successfully in dist/ directory"
 
+# Testing targets
+test-components:
+	@echo "Running component tests..."
+	@chmod +x test-components.sh
+	@./test-components.sh
+
+test-nested:
+	@echo "Running nested X session test..."
+	@chmod +x test-i3xgnome.sh
+	@./test-i3xgnome.sh
+
+test-nested-debug:
+	@echo "Running nested X session test with debug..."
+	@chmod +x test-i3xgnome.sh
+	@DEBUG=1 ./test-i3xgnome.sh --debug
+
+test-quick:
+	@echo "Running quick component tests..."
+	@chmod +x test-components.sh
+	@./test-components.sh
+
+test: test-components test-nested
+	@echo "All tests completed"
+
+# Performance benchmarking targets
+benchmark:
+	@echo "Running performance benchmark..."
+	@chmod +x tools/benchmark-performance.sh
+	@./tools/benchmark-performance.sh
+
+benchmark-verbose:
+	@echo "Running verbose performance benchmark..."
+	@chmod +x tools/benchmark-performance.sh
+	@./tools/benchmark-performance.sh --verbose
+
+benchmark-compare:
+	@echo "Running benchmark with comparison..."
+	@chmod +x tools/benchmark-performance.sh
+	@if [ -f ~/.cache/i3-gnome-benchmarks/baseline.json ]; then \
+		./tools/benchmark-performance.sh --compare ~/.cache/i3-gnome-benchmarks/baseline.json; \
+	else \
+		echo "No baseline found. Creating baseline..."; \
+		./tools/benchmark-performance.sh --output ~/.cache/i3-gnome-benchmarks/baseline.json; \
+	fi
+
 help:
 	@echo "i3-gnome-fork $(VERSION) - i3 window manager with GNOME integration"
 	@echo ""
@@ -132,6 +184,10 @@ help:
 	@echo "  make uninstall    - Remove i3-gnome integration"
 	@echo "  make reinstall    - Reinstall i3-gnome integration"
 	@echo "  make status       - Check installation status"
+	@echo "  make test         - Run all tests"
+	@echo "  make test-components - Test individual components"
+	@echo "  make test-nested  - Test in nested X session"
+	@echo "  make test-quick   - Quick component validation"
 	@echo "  make deb-package  - Build Debian package"
 	@echo "  make rpm-package  - Build RPM package"
 	@echo "  make tarball      - Create source tarball"
@@ -143,4 +199,4 @@ help:
 	@echo "  DESTDIR           - Installation destination root (default: empty)"
 	@echo "  PREFIX            - Installation prefix (default: /usr)"
 
-.PHONY: all install uninstall reinstall validate status deb-package rpm-package tarball binary-package packages help
+.PHONY: all install uninstall reinstall validate status test test-components test-nested test-nested-debug test-quick deb-package rpm-package tarball binary-package packages help

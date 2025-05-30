@@ -1,0 +1,63 @@
+# Development and temporary files
+*.log
+*.tmp
+*~
+.DS_Store
+.vscode/
+.idea/
+
+# TaskMaster AI files (development only)
+.cursor/
+.taskmasterconfig
+scripts/
+tasks/
+.env
+.env.example
+
+# Node.js files (if any)
+node_modules/
+package-lock.json
+package.json
+
+# Test artifacts
+/tmp/i3-gnome-test-results-*.txt
+*.cache
+
+# Build artifacts
+*.o
+*.so
+*.a
+
+# Backup files
+*.bak
+*.backup
+
+# OS specific files
+Thumbs.db
+Desktop.ini
+
+# Added by Claude Task Master
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dev-debug.log
+# Dependency directories
+node_modules/
+# Environment variables
+.env
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+# OS specific
+.DS_Store
+# Task files
+tasks.json
+tasks/ 
