@@ -61,79 +61,57 @@ validate:
 
 # Target rules
 all: validate
-	@echo "i3-gnome-fork $(VERSION) with Enhanced Stability Suite"
+	@echo "i3xgnome $(VERSION)"
 	@echo "Run 'make install' to install."
-	@echo "Run 'make install-enhanced' to install with enhanced crash prevention tools."
 
 install: validate
-	@echo "Installing i3-gnome integration (version $(VERSION))..."
-	@echo "--- Makefile install --- DEBUG --- "
-	@echo "DESTDIR='$(DESTDIR)'"
-	@echo "PREFIX='$(PREFIX)'"
-	@echo "BINDIR='$(BINDIR)'"
-	@echo "------------------------------------"
+	@echo "Installing i3xgnome $(VERSION)..."
 	# Ensure target directories exist within DESTDIR
-	$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR) $(DESTDIR)/etc/i3-gnome
-	$(INSTALL) -m0755 $(I3_GNOME) $(TARGET_I3_GNOME)
-	$(INSTALL) -m0755 $(GNOME_I3) $(TARGET_GNOME_I3)
-	$(INSTALL) -m0755 $(I3_TROUBLESHOOT) $(TARGET_I3_TROUBLESHOOT)
-	$(INSTALL) -m0644 $(I3_SESSION) $(TARGET_I3_SESSION)
-	$(INSTALL) -m0644 $(I3_DESKTOP) $(TARGET_I3_DESKTOP)
-	$(INSTALL) -m0644 $(I3_XSESSION) $(TARGET_I3_XSESSION)
-	@echo "Basic installation completed successfully."
-	@echo ""
-	@echo "💡 For enhanced crash prevention, run: make install-enhanced"
+	@$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR) $(DESTDIR)/etc/i3-gnome >/dev/null 2>&1
+	@$(INSTALL) -m0755 $(I3_GNOME) $(TARGET_I3_GNOME)
+	@$(INSTALL) -m0755 $(I3_GNOME_ENHANCED) $(TARGET_I3_GNOME_ENHANCED)
+	@$(INSTALL) -m0755 $(I3_GNOME_AUTOFIX) $(TARGET_I3_GNOME_AUTOFIX)
+	@$(INSTALL) -m0755 $(I3_GNOME_TEST_SUITE) $(TARGET_I3_GNOME_TEST_SUITE)
+	@$(INSTALL) -m0755 $(GNOME_I3) $(TARGET_GNOME_I3)
+	@$(INSTALL) -m0755 $(I3_TROUBLESHOOT) $(TARGET_I3_TROUBLESHOOT)
+	@$(INSTALL) -m0755 test-components.sh $(BINDIR)/i3-gnome-test-components
+	@$(INSTALL) -m0755 test-i3xgnome.sh $(BINDIR)/i3-gnome-test-integration
+	@$(INSTALL) -m0644 $(I3_SESSION) $(TARGET_I3_SESSION)
+	@$(INSTALL) -m0644 $(I3_DESKTOP) $(TARGET_I3_DESKTOP)
+	@$(INSTALL) -m0644 $(I3_XSESSION) $(TARGET_I3_XSESSION)
+	# Install NVIDIA configuration
+	@$(INSTALL) -d $(DESTDIR)/etc/X11/xorg.conf.d >/dev/null 2>&1
+	@$(INSTALL) -m0644 20-nvidia.conf $(DESTDIR)/etc/X11/xorg.conf.d/20-nvidia.conf
+	@echo "installed"
 
 install-enhanced: install
-	@echo "Installing enhanced crash prevention tools..."
-	$(INSTALL) -m0755 $(I3_GNOME_ENHANCED) $(TARGET_I3_GNOME_ENHANCED)
-	$(INSTALL) -m0755 $(I3_GNOME_AUTOFIX) $(TARGET_I3_GNOME_AUTOFIX)
-	$(INSTALL) -m0755 $(I3_GNOME_TEST_SUITE) $(TARGET_I3_GNOME_TEST_SUITE)
-	$(INSTALL) -m0755 test-components.sh $(BINDIR)/i3-gnome-test-components
-	$(INSTALL) -m0755 test-i3xgnome.sh $(BINDIR)/i3-gnome-test-integration
-	# Install NVIDIA configuration
-	$(INSTALL) -d $(DESTDIR)/etc/X11/xorg.conf.d
-	$(INSTALL) -m0644 20-nvidia.conf $(DESTDIR)/etc/X11/xorg.conf.d/20-nvidia.conf
-	@echo ""
-	@echo "🛡️  Enhanced i3xGnome installation completed successfully!"
-	@echo ""
-	@echo "Available commands:"
-	@echo "  i3-gnome                 - Original session launcher"
-	@echo "  i3-gnome-enhanced        - Enhanced session with crash prevention"
-	@echo "  i3-gnome-autofix         - Automated diagnostics and repair"
-	@echo "  i3-gnome-test-suite      - Comprehensive testing framework"
-	@echo "  i3-gnome-troubleshoot    - Basic troubleshooting tool"
-	@echo ""
-	@echo "🚀 To test your installation: i3-gnome-test-suite"
-	@echo "🔧 To auto-fix issues: i3-gnome-autofix"
-	@echo "⚡ To use enhanced mode: i3-gnome-enhanced"
 
 uninstall:
-	@echo "Uninstalling i3-gnome integration..."
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-enhanced
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-autofix
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-suite
-	rm -f $(DESTDIR)$(PREFIX)/bin/gnome-session-i3
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-troubleshoot
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-components
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-integration
-	rm -f $(DESTDIR)$(PREFIX)/share/gnome-session/sessions/i3-gnome.session
-	rm -f $(DESTDIR)$(PREFIX)/share/applications/i3-gnome.desktop
-	rm -f $(DESTDIR)$(PREFIX)/share/xsessions/i3-gnome.desktop
-	rm -f $(DESTDIR)/etc/X11/xorg.conf.d/20-nvidia.conf
-	@echo "Uninstallation completed successfully."
+	@echo "Uninstalling i3xgnome..."
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-enhanced
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-autofix
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-suite
+	@rm -f $(DESTDIR)$(PREFIX)/bin/gnome-session-i3
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-troubleshoot
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-components
+	@rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-integration
+	@rm -f $(DESTDIR)$(PREFIX)/share/gnome-session/sessions/i3-gnome.session
+	@rm -f $(DESTDIR)$(PREFIX)/share/applications/i3-gnome.desktop
+	@rm -f $(DESTDIR)$(PREFIX)/share/xsessions/i3-gnome.desktop
+	@rm -f $(DESTDIR)/etc/X11/xorg.conf.d/20-nvidia.conf
+	@echo "uninstalled"
 
-reinstall: uninstall install-enhanced
+reinstall: uninstall install
 
 # Display information about installed files
 status:
-	@echo "i3-gnome-fork $(VERSION) status:"
+	@echo "i3xgnome $(VERSION) status:"
 	@for file in $(PREFIX)/bin/i3-gnome $(PREFIX)/bin/i3-gnome-enhanced $(PREFIX)/bin/i3-gnome-autofix $(PREFIX)/bin/i3-gnome-test-suite $(PREFIX)/bin/gnome-session-i3 $(PREFIX)/bin/i3-gnome-troubleshoot $(PREFIX)/share/gnome-session/sessions/i3-gnome.session $(PREFIX)/share/applications/i3-gnome.desktop $(PREFIX)/share/xsessions/i3-gnome.desktop; do \
 		if [ -f "$$file" ]; then \
-			echo "✓ $$file (installed)"; \
+			echo "  $$file (installed)"; \
 		else \
-			echo "✗ $$file (not installed)"; \
+			echo "  $$file (not installed)"; \
 		fi; \
 	done
 
@@ -216,13 +194,13 @@ benchmark-compare:
 	fi
 
 help:
-	@echo "i3-gnome-fork $(VERSION) - i3 window manager with GNOME integration"
+	@echo "i3xgnome $(VERSION) - i3 window manager with GNOME integration"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make              - Validate files and display version information"
-	@echo "  make install      - Install i3-gnome integration"
-	@echo "  make uninstall    - Remove i3-gnome integration"
-	@echo "  make reinstall    - Reinstall i3-gnome integration"
+	@echo "  make install      - Install i3xgnome"
+	@echo "  make uninstall    - Remove i3xgnome"
+	@echo "  make reinstall    - Reinstall i3xgnome"
 	@echo "  make status       - Check installation status"
 	@echo "  make test         - Run all tests"
 	@echo "  make test-components - Test individual components"
