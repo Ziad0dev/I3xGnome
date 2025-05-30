@@ -6,7 +6,7 @@
 #
 
 # Version
-VERSION = 1.3.0
+VERSION = 2.1.0
 
 # Installation settings
 INSTALL = install
@@ -25,35 +25,45 @@ XSESSIONDIR  = $(DESTDIR)$(PREFIX)/share/xsessions
 # Source files
 SRC_DIR      = session
 I3_GNOME     = $(SRC_DIR)/i3-gnome
+I3_GNOME_ENHANCED = $(SRC_DIR)/i3-gnome-enhanced
+I3_GNOME_AUTOFIX = $(SRC_DIR)/i3-gnome-autofix
+I3_GNOME_TEST_SUITE = $(SRC_DIR)/i3-gnome-test-suite
 GNOME_I3     = $(SRC_DIR)/gnome-session-i3
 I3_SESSION   = $(SRC_DIR)/i3-gnome.session
 I3_DESKTOP   = $(SRC_DIR)/i3-gnome.desktop
 I3_XSESSION  = $(SRC_DIR)/i3-gnome-xsession.desktop
-I3_DIAGNOSE  = $(SRC_DIR)/i3-gnome-diagnose.sh
+I3_TROUBLESHOOT = $(SRC_DIR)/i3-gnome-troubleshoot
 
 # Target paths are now correctly constructed using DESTDIR and PREFIX
 TARGET_I3_GNOME    = $(BINDIR)/i3-gnome
+TARGET_I3_GNOME_ENHANCED = $(BINDIR)/i3-gnome-enhanced
+TARGET_I3_GNOME_AUTOFIX = $(BINDIR)/i3-gnome-autofix
+TARGET_I3_GNOME_TEST_SUITE = $(BINDIR)/i3-gnome-test-suite
 TARGET_GNOME_I3    = $(BINDIR)/gnome-session-i3
 TARGET_I3_SESSION  = $(SESSIONDIR)/i3-gnome.session
 TARGET_I3_DESKTOP  = $(APPDIR)/i3-gnome.desktop
 TARGET_I3_XSESSION = $(XSESSIONDIR)/i3-gnome.desktop
-TARGET_I3_DIAGNOSE = $(BINDIR)/i3-gnome-diagnose.sh
+TARGET_I3_TROUBLESHOOT = $(BINDIR)/i3-gnome-troubleshoot
 
 # Validation function
 validate:
 	@echo "Validating files..."
 	@test -f $(I3_GNOME) || { echo "Error: $(I3_GNOME) not found"; exit 1; }
+	@test -f $(I3_GNOME_ENHANCED) || { echo "Error: $(I3_GNOME_ENHANCED) not found"; exit 1; }
+	@test -f $(I3_GNOME_AUTOFIX) || { echo "Error: $(I3_GNOME_AUTOFIX) not found"; exit 1; }
+	@test -f $(I3_GNOME_TEST_SUITE) || { echo "Error: $(I3_GNOME_TEST_SUITE) not found"; exit 1; }
 	@test -f $(GNOME_I3) || { echo "Error: $(GNOME_I3) not found"; exit 1; }
 	@test -f $(I3_SESSION) || { echo "Error: $(I3_SESSION) not found"; exit 1; }
 	@test -f $(I3_DESKTOP) || { echo "Error: $(I3_DESKTOP) not found"; exit 1; }
 	@test -f $(I3_XSESSION) || { echo "Error: $(I3_XSESSION) not found"; exit 1; }
-	@test -f $(I3_DIAGNOSE) || { echo "Error: $(I3_DIAGNOSE) not found"; exit 1; }
+	@test -f $(I3_TROUBLESHOOT) || { echo "Error: $(I3_TROUBLESHOOT) not found"; exit 1; }
 	@echo "All files validated successfully."
 
 # Target rules
 all: validate
-	@echo "i3-gnome-fork $(VERSION)"
+	@echo "i3-gnome-fork $(VERSION) with Enhanced Stability Suite"
 	@echo "Run 'make install' to install."
+	@echo "Run 'make install-enhanced' to install with enhanced crash prevention tools."
 
 install: validate
 	@echo "Installing i3-gnome integration (version $(VERSION))..."
@@ -66,30 +76,60 @@ install: validate
 	$(INSTALL) -d $(BINDIR) $(APPDIR) $(SESSIONDIR) $(XSESSIONDIR) $(DESTDIR)/etc/i3-gnome
 	$(INSTALL) -m0755 $(I3_GNOME) $(TARGET_I3_GNOME)
 	$(INSTALL) -m0755 $(GNOME_I3) $(TARGET_GNOME_I3)
-	$(INSTALL) -m0755 $(I3_DIAGNOSE) $(TARGET_I3_DIAGNOSE)
-	$(INSTALL) -m0755 tools/benchmark-performance.sh $(BINDIR)/i3-gnome-benchmark
+	$(INSTALL) -m0755 $(I3_TROUBLESHOOT) $(TARGET_I3_TROUBLESHOOT)
 	$(INSTALL) -m0644 $(I3_SESSION) $(TARGET_I3_SESSION)
 	$(INSTALL) -m0644 $(I3_DESKTOP) $(TARGET_I3_DESKTOP)
 	$(INSTALL) -m0644 $(I3_XSESSION) $(TARGET_I3_XSESSION)
-	$(INSTALL) -m0644 config/i3-gnome-performance.conf $(DESTDIR)/etc/i3-gnome/performance.conf
-	@echo "Installation completed successfully."
+	@echo "Basic installation completed successfully."
+	@echo ""
+	@echo "💡 For enhanced crash prevention, run: make install-enhanced"
+
+install-enhanced: install
+	@echo "Installing enhanced crash prevention tools..."
+	$(INSTALL) -m0755 $(I3_GNOME_ENHANCED) $(TARGET_I3_GNOME_ENHANCED)
+	$(INSTALL) -m0755 $(I3_GNOME_AUTOFIX) $(TARGET_I3_GNOME_AUTOFIX)
+	$(INSTALL) -m0755 $(I3_GNOME_TEST_SUITE) $(TARGET_I3_GNOME_TEST_SUITE)
+	$(INSTALL) -m0755 test-components.sh $(BINDIR)/i3-gnome-test-components
+	$(INSTALL) -m0755 test-i3xgnome.sh $(BINDIR)/i3-gnome-test-integration
+	# Install NVIDIA configuration
+	$(INSTALL) -d $(DESTDIR)/etc/X11/xorg.conf.d
+	$(INSTALL) -m0644 20-nvidia.conf $(DESTDIR)/etc/X11/xorg.conf.d/20-nvidia.conf
+	@echo ""
+	@echo "🛡️  Enhanced i3xGnome installation completed successfully!"
+	@echo ""
+	@echo "Available commands:"
+	@echo "  i3-gnome                 - Original session launcher"
+	@echo "  i3-gnome-enhanced        - Enhanced session with crash prevention"
+	@echo "  i3-gnome-autofix         - Automated diagnostics and repair"
+	@echo "  i3-gnome-test-suite      - Comprehensive testing framework"
+	@echo "  i3-gnome-troubleshoot    - Basic troubleshooting tool"
+	@echo ""
+	@echo "🚀 To test your installation: i3-gnome-test-suite"
+	@echo "🔧 To auto-fix issues: i3-gnome-autofix"
+	@echo "⚡ To use enhanced mode: i3-gnome-enhanced"
 
 uninstall:
 	@echo "Uninstalling i3-gnome integration..."
 	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-enhanced
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-autofix
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-suite
 	rm -f $(DESTDIR)$(PREFIX)/bin/gnome-session-i3
-	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-diagnose.sh
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-troubleshoot
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-components
+	rm -f $(DESTDIR)$(PREFIX)/bin/i3-gnome-test-integration
 	rm -f $(DESTDIR)$(PREFIX)/share/gnome-session/sessions/i3-gnome.session
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/i3-gnome.desktop
 	rm -f $(DESTDIR)$(PREFIX)/share/xsessions/i3-gnome.desktop
+	rm -f $(DESTDIR)/etc/X11/xorg.conf.d/20-nvidia.conf
 	@echo "Uninstallation completed successfully."
 
-reinstall: uninstall install
+reinstall: uninstall install-enhanced
 
 # Display information about installed files
 status:
 	@echo "i3-gnome-fork $(VERSION) status:"
-	@for file in $(PREFIX)/bin/i3-gnome $(PREFIX)/bin/gnome-session-i3 $(PREFIX)/bin/i3-gnome-diagnose.sh $(PREFIX)/share/gnome-session/sessions/i3-gnome.session $(PREFIX)/share/applications/i3-gnome.desktop $(PREFIX)/share/xsessions/i3-gnome.desktop; do \
+	@for file in $(PREFIX)/bin/i3-gnome $(PREFIX)/bin/i3-gnome-enhanced $(PREFIX)/bin/i3-gnome-autofix $(PREFIX)/bin/i3-gnome-test-suite $(PREFIX)/bin/gnome-session-i3 $(PREFIX)/bin/i3-gnome-troubleshoot $(PREFIX)/share/gnome-session/sessions/i3-gnome.session $(PREFIX)/share/applications/i3-gnome.desktop $(PREFIX)/share/xsessions/i3-gnome.desktop; do \
 		if [ -f "$$file" ]; then \
 			echo "✓ $$file (installed)"; \
 		else \
