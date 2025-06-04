@@ -1,70 +1,33 @@
 # Changelog
 
-All notable changes to i3-gnome will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [1.2.1] - 2025-04-20
-
-### Added
-- NVIDIA configuration improvements
-- Simplified 20-nvidia.conf for better hardware support
+## [1.0.0] - 2024-12-19
 
 ### Changed
-- Updated documentation with setup information and NVIDIA troubleshooting
-- Updated README with comprehensive installation instructions
+- Completely rewritten to be simple and reliable
+- Reduced main script from 874 lines to 19 lines (based on working i3-gnome)
+- Removed all complex features that were causing problems:
+  - Removed "enhanced" session launcher with 750+ lines
+  - Removed diagnostic and autofix tools
+  - Removed test suite and troubleshooting scripts
+  - Removed performance monitoring and optimization features
+  - Removed NVIDIA-specific configurations
+- Simplified Makefile from 221 lines to 96 lines
+- Updated README to be clear and concise
 
-## [1.3.0] - 2025-04-23
-
-### Added
-- GitHub Packages and binary installer support
-- Installation wiki page
-
-### Changed
-- Improved Makefile paths to handle DESTDIR correctly for RPM builds
-- Updated CI workflows for better release automation
-- Renamed Docker image to i3xgnome
-
-### Fixed
-- Debian packaging issues
-- Docker build configuration
-- GitHub Actions workflows and artifact handling
-
-## [1.2.0] - 2023-06-15
-
-### Added
-- GNOME 46 compatibility
-- X-GDM-CanRunHeadless for remote login support
-- Comprehensive troubleshooting tool
-- Improved packaging for Debian and RPM systems
-
-### Changed
-- Updated session file to work with GNOME 46
-- More robust GNOME session handling
-
-### Fixed
-- Detection of GNOME settings daemons
-- Session registration for newer GNOME versions
-
-## [1.1.0] - 2023-01-10
+### Removed
+- i3-gnome-enhanced (23KB bloated script)
+- i3-gnome-autofix (21KB diagnostic tool)
+- i3-gnome-test-suite (15KB test framework)
+- i3-gnome-troubleshoot (5.7KB troubleshooting tool)
+- Complex packaging and distribution systems
+- Performance benchmarking tools
+- Extensive documentation for unused features
 
 ### Added
-- GNOME 45 compatibility
-- Multiple desktop names in i3-gnome-xsession.desktop
+- Simple, reliable session integration based on proven working i3-gnome
+- Clear documentation focused on actual functionality
 
-### Changed
-- Enhanced session scripts for better integration
-
-### Fixed
-- Session termination cleanup
-- GNOME settings service detection
-
-## [1.0.0] - 2022-08-22
-
-### Added
-- Initial stable release
-- GNOME 40-44 compatibility
-- i3-gnome launcher script
-- gnome-session-i3 script
-- Desktop and session files 
+### Philosophy
+This release follows the UNIX philosophy: "Do one thing and do it well."
+Instead of trying to handle every edge case with complex code, we provide
+a simple, reliable integration that just works. 

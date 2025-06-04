@@ -2,10 +2,9 @@
 Type=Application
 Name=i3-gnome
 NoDisplay=true
-Comment=Improved dynamic tiling window manager with GNOME integration
+Comment=improved dynamic tiling window manager
 Exec=i3-gnome
 X-GNOME-WMName=i3-gnome
 X-GNOME-Autostart-Phase=WindowManager
 X-GNOME-Provides=windowmanager
-X-GNOME-Autostart-Notify=true
-X-GNOME-HiddenUnderSystemd=false
+X-GNOME-Autostart-Notify=false
